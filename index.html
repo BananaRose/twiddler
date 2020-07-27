@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="jquery.js"></script>
+    <script src="data_generator.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Modak&family=Rubik:wght@500&family=Yellowtail&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <title>Twiddler by ChristyChu</title>
+    <style>
+      body{
+        margin: 0px;
+        padding: 0px;
+        font-family:Arial, Helvetica, sans-serif;
+        background: rgb(196, 214, 233);
+      }
+      h1{
+        font-size: 65px;
+        font-weight: bolder;
+        font-style: Modak, Rubik;
+        color:#ffd9b3;
+        background: #003300;
+        width: auto;
+        text-align: center;
+        padding: 20px;
+        border: 7px #ffd9b3 solid;
+        margin-top: 0px;
+        box-sizing: 250px 250px;
+        min-width: fit-content;
+        min-height: fit-content;
+        cursor: pointer;
+      }
+      form{
+        box-sizing: content-box;
+        border: 3px solid #ffd9b3;
+        background: #d3f0f9;
+        border-radius: 7px;
+        font:14px/1.4 inherit;
+        overflow: hidden;
+        width: 500px;
+        height: auto;
+        text-align: center;
+        padding: 25px 35px;
+        float: none;
+        margin:0px auto;
+        min-width: fit-content;
+        min-height: fit-content;
+      }
+      #username{
+        background: #fff;
+        border: 1px solid #c6c7cc;
+        box-shadow: inset 0 3px 3px rgba(0, 0, 0, .1);
+        color: #636466;
+        padding: 10px;
+        margin-top: 10px;
+        width: 100%;
+        height: 25px;
+        display: block;
+        border-radius: 7px;
+      }
+      #tweet{
+        background: #fff;
+        border: 1px solid #c6c7cc;
+        box-shadow: inset 0 3px 3px rgba(0, 0, 0, .1);
+        color: #636466;
+        padding: 10px;
+        margin-top: 10px;
+        width: 100%;
+        min-height: 100px;
+        display: block;
+        border-radius: 7px;
+      }
+      #submitbutton{
+        color: #ffd9b3;
+        background-color: #003300;
+        width: auto;
+        display:inline-block;
+        margin: auto;
+        padding: 8px 16px;
+        font-weight: bolder;
+        cursor: pointer;
+        border-radius: 7px;
+      }
+      .tweets{
+        text-align: center;
+      }
+      h3{
+        font-size: 30px;
+        font-weight: bolder;
+        font-style: Modak, Rubik;
+        color: #003300;
+        background: #ffd9b3;
+        width:200px;
+        text-align: center;
+        padding: 4px;
+        border: 2px #003300 solid;
+        min-width: fit-content;
+        min-height: fit-content;
+        cursor: pointer;
+        display: inline-block;
+        border-radius: 7px;
+      }
+      #historytbutton{
+        color: #ffd9b3;
+        background-color: #003300;
+        width: auto;
+        display:inline-block;
+        text-align:center;
+        margin: auto;
+        padding: 8px 16px;
+        font-weight: bolder;
+        cursor: pointer;
+        border-radius: 7px;
+
+      }
+      .tweetcontainer{
+        display: block;
+        border: 1px solid #c6c7cc;
+        text-align: left;
+      }
+      a.user:hover{
+        color: blue;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      a.user{
+        cursor: pointer;
+        text-decoration: underline;
+        font-weight: bold;
+      }
+      .tweetcontainer > div{
+        border: 1px solid;
+        border-radius: 5px;
+        width: 85%;
+        margin: 10px auto;
+        padding: 10px 5px;
+        background-color: #d3f0f9;
+        display: block;
+        min-width: auto;
+        min-height: fit-content;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <header>
+    <h1>Twiddler</h1>
+    </header>
+
+  <div class="form">
+    <form class="newTweet" action="index.html">
+      <div>
+        <lable >Username:
+          <input id = "username" type = "text" onFocus="this.value=''" required>
+        </lable>
+      </div>
+      <br>
+      <div>
+        <lable>Tweet:
+          <input id = "tweet" type = "text" onFocus="this.value=''" minlength="5" required>
+        </lable>
+      </div>
+      <br>
+      <div>
+        <button id='submitbutton' >Submit</button>
+      </div>
+    </form>
+  </div>
+  <br>
+    <div class="tweets">
+      <h3 id="tweets">Tweets</h3>
+      <br>
+      <button id='historytbutton'>LoadAllTweets</button>
+    </div>
+    <br>
+  <div class="tweetcontainer"></div>
+  <div class="usertweet">
+    <a class='user'></a>
+  </div>
+
+    <script>
+    $(document).ready(function(){
+        var $body = $('body');
+        // $body.html('');
+        // console.log(streams);
+        var $header = $('header');
+
+        var $tweetcontainer = $('.tweetcontainer');
+
+        var index = streams.home.length - 1;
+          while(index >= 0){
+          var tweet = streams.home[index];
+          var $tweet = $('<div></div>');
+          $tweet.append('@' + '<a class="user">'+ tweet.user + '</a>'+': ' + tweet.message+'<br>');
+          var $timestamp = $('<i class="timestamp"></i>');
+          $timestamp.append(moment(tweet.created_at).fromNow());
+          $timestamp.attr('title', moment(tweet.created_at).format('MMM DD, YYYY, h:mm:ss a'));
+          $timestamp.appendTo($tweet);
+          $tweet.appendTo($tweetcontainer);
+          index -= 1;
+          }
+
+          var $loadUserTweets = $('.tweetcontainer').on('click', 'a', function(event) {
+          // console.log(currentUser);
+          // console.log(streams.users[currentUser]);
+          var currentUser = event.currentTarget.text;
+          // console.log(currentUser);
+          // console.log(streams.users[currentUser]);
+          $tweetcontainer.html('');
+          var index = streams.users[currentUser].length - 1;
+          while(index >= 0){
+            console.log(index);
+            var user = streams.users[currentUser][index].user;
+            // console.log(user);
+            var usertweet = streams.users[currentUser][index].message;
+            // console.log(usertweet);
+            var $usertweet = $('<div></div>');
+            $usertweet.append('@'+'<a class="user">'+ user+'</a>'+': ' + usertweet+'<br>');
+            // console.log(usertweet);
+            var $timestamp = $('<i class="timestamp"></i>');
+            $timestamp.append(moment(usertweet.created_at).fromNow());
+            $timestamp.attr('title', moment(usertweet.created_at).format('MMM DD, YYYY, h:mm:ss a'));
+            $timestamp.appendTo($usertweet);
+            $usertweet.appendTo($tweetcontainer);
+            index -= 1;
+          };
+          $('h3').text('Back to Tweets');
+          $('#historytbutton').text(currentUser+"\'s timeline");
+        });
+
+
+
+        $('h1').click(function(){
+          window.location.href = "./index.html";
+        });
+
+        $('input').focus(function(){
+          $(this).css('background', 'pink');
+        });
+        $('input').blur(function(){
+          $(this).css('background', 'white');
+        });
+        $('h3').click(function(){
+          window.location.href = "./index.html";
+        });
+        document.getElementById("username").defaultValue = "Please type in your username...";
+        document.getElementById("tweet").defaultValue = "Please write at least five words...";
+
+        $('form.newTweet').submit(function(event){
+          event.preventDefault();
+          window.visitor = $('#username').val();
+          var newTweetUser = $('#username').val();
+          var newTweet = $('#tweet').val();
+          var $newTweet = $('<div></div>');
+          $newTweet.append('@'+'<a class="user">'+newTweetUser+'</a>'+': '+newTweet);
+          var $timestamp = $('<i class="timestamp"></i>');
+          $timestamp.append(moment(newTweet.created_at).fromNow());
+          $timestamp.attr('title', moment(newTweet.created_at).format('MMM DD, YYYY, h:mm:ss a'));
+          $timestamp.appendTo($newTweet);
+          $newTweet.prependTo($tweetcontainer);
+          streams.home.push(newTweet);
+          $('#username').val('');
+          $('#tweet').val('');
+          writeTweet($('#username').val());
+        });
+
+        var $loadAllTweets = $('#historytbutton').click(function(){
+          $tweetcontainer.html('');
+          var index = streams.home.length - 1;
+          while(index >= 0){
+            var tweet = streams.home[index];
+            var $tweet = $('<div></div>');
+            $tweet.append('@' + '<a class="user">'+ tweet.user + '</a>'+': ' + tweet.message+'<br>');
+            var $timestamp = $('<i class="timestamp"></i>');
+            $timestamp.append(moment(tweet.created_at).fromNow());
+            $timestamp.attr('title', moment(tweet.created_at).format('MMM DD, YYYY, h:mm:ss a'));
+            $timestamp.appendTo($tweet);
+            $tweet.appendTo($tweetcontainer);
+            index -= 1;
+            $('h3').text('Tweets');
+          };
+          $loadUserTweets();
+        });
+    });
+    </script>
+    </body>
+</html>
